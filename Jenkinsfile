@@ -12,20 +12,6 @@ pipeline {
             }
         }
 
-        stage('Fetch Artifact from main') {
-            when {
-                branch 'dev'
-            }
-            steps {
-                echo "Running on branch: ${env.BRANCH_NAME}"
-                copyArtifacts(
-                    projectName: "${env.JOB_NAME}/main",
-                    selector: lastSuccessful(),
-                    filter: 'javaapp-pipeline/target/*.jar',
-                    fingerprintArtifacts: true
-                )
-            }
-        }
 
         stage('Unit Tests') {
             steps {
@@ -77,6 +63,21 @@ pipeline {
                         echo "Triggering dev pipeline from main"
                         build job: "${env.JOB_NAME.replaceFirst('/main$', '')}/dev"
                     }
+        }
+
+        stage('Fetch Artifact from main') {
+            when {
+                branch 'dev'
+            }
+            steps {
+                echo "Running on branch: ${env.BRANCH_NAME}"
+                copyArtifacts(
+                    projectName: "${env.JOB_NAME}/main",
+                    selector: lastSuccessful(),
+                    filter: 'javaapp-pipeline/target/*.jar',
+                    fingerprintArtifacts: true
+                )
+            }
         }
 
         stage('Deploy') {
