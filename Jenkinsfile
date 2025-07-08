@@ -1,31 +1,14 @@
 pipeline {
-    agent { label 'agent' }
+    agent any
 
     stages {
         stage('Checkout') {
-            when {
-                branch 'main'
-            }
             steps {
                 echo "Running on branch: ${env.BRANCH_NAME}"
                 checkout scm
             }
         }
 
-        stage('Fetch Artifact from main') {
-            when {
-                branch 'dev'
-            }
-            steps {
-                echo "Running on branch: ${env.BRANCH_NAME}"
-                copyArtifacts(
-                    projectName: "${env.JOB_NAME}/main",
-                    selector: lastSuccessful(),
-                    filter: 'javaapp-pipeline/target/*.jar',
-                    fingerprintArtifacts: true
-                )
-            }
-        }
 
         stage('Unit Tests') {
             steps {
@@ -34,38 +17,29 @@ pipeline {
             }
         }
 
-        stage('Trivy Scan') {
-            steps {
-                    echo "Running Trivy scan in ${env.BRANCH_NAME} branch"
-                    sh '''
-                        wget -q https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -O html.tpl
-                        trivy fs --format template --template "@html.tpl" -o report.html .
-                    '''
-            }
-        }
+        // stage('Trivy Scan') {
+        //     steps {
+        //             echo "Running Trivy scan in ${env.BRANCH_NAME} branch"
+        //             sh '''
+        //                 wget -q https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -O html.tpl
+        //                 trivy fs --format template --template "@html.tpl" -o report.html .
+        //             '''
+        //     }
+        // }
 
-        stage('Sonar Analysis') {
-            steps {
-                    withSonarQubeEnv('sonar') {
-                        echo "Running SonarQube analysis in ${env.BRANCH_NAME}"
-                        sh '''
-                            mvn verify sonar:sonar \
-                            -Dsonar.projectKey=java-app-${env.BRANCH_NAME} \
-                            -Dsonar.projectName=java-app-${env.BRANCH_NAME}
-                        '''
-                }
-            }
-        }
+        // stage('Sonar Analysis') {
+        //     steps {
+        //             withSonarQubeEnv('sonar') {
+        //                 echo "Running SonarQube analysis in ${env.BRANCH_NAME}"
+        //                 sh '''
+        //                     mvn verify sonar:sonar \
+        //                     -Dsonar.projectKey=java-app-${env.BRANCH_NAME} \
+        //                     -Dsonar.projectName=java-app-${env.BRANCH_NAME}
+        //                 '''
+        //         }
+        //     }
+        // }
 
-                stage('Trigger Dev Branch') {
-                    when {
-                        branch 'main'
-                    }
-                    steps {
-                        echo "Triggering dev pipeline from main"
-                        build job: "${env.JOB_NAME}/dev"
-                    }
-                }
             
         stage('Build & Archive') {
             when {
@@ -74,7 +48,7 @@ pipeline {
             steps {
                 echo "Building in main branch"
                     sh 'mvn clean package'
-                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                   // archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
 
