@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     stages {
-        // stage('Checkout') {
-        //     steps {
-        //         echo "Running on Branch: ${env.BRANCH_NAME}"
-        //         checkout scm
-        //     }
-        // }
+        stage('Checkout') {
+            steps {
+                echo "Running on Branch: ${env.BRANCH_NAME}"
+                checkout scm
+            }
+        }
 
 
         stage('Unit Tests') {
