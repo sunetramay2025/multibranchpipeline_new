@@ -43,15 +43,15 @@ pipeline {
             }
         }
 
-            
+
         stage('Build & Archive') {
             when {
                 branch 'main'
             }
             steps {
                 echo "Building in main branch"
-                    sh 'mvn clean package'
-                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                sh 'mvn clean package'
+                archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
             }
         }
 
@@ -70,15 +70,14 @@ pipeline {
                 branch 'dev'
             }
             steps {
-                echo "Running on branch: ${env.BRANCH_NAME}"
+                echo 'Running on branch: dev'
                 copyArtifacts(
-                    projectName: "${env.JOB_NAME}/main",
-                    selector: lastSuccessful(),
-                    filter: 'javaapp-pipeline/target/*.jar',
-                    fingerprintArtifacts: true
+                    projectName: 'Multibranch-pipeline/main',
+                    selector: lastSuccessful()
                 )
             }
         }
+
 
         stage('Deploy') {
             when {
