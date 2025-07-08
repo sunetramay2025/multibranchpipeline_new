@@ -57,15 +57,6 @@ pipeline {
             }
         }
 
-                stage('Trigger Dev Branch') {
-                    when {
-                        branch 'main'
-                    }
-                    steps {
-                        echo "Triggering dev pipeline from main"
-                        build job: "${env.JOB_NAME.replaceFirst('/main$', '')}/dev"
-                    }
-                }
             
         stage('Build & Archive') {
             when {
@@ -76,6 +67,16 @@ pipeline {
                     sh 'mvn clean package'
                     archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
+        }
+
+        stage('Trigger Dev Branch') {
+                    when {
+                        branch 'main'
+                    }
+                    steps {
+                        echo "Triggering dev pipeline from main"
+                        build job: "${env.JOB_NAME.replaceFirst('/main$', '')}/dev"
+                    }
         }
 
         stage('Deploy') {
