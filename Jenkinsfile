@@ -57,6 +57,16 @@ pipeline {
             }
         }
 
+                stage('Trigger Dev Branch') {
+                    when {
+                        branch 'main'
+                    }
+                    steps {
+                        echo "Triggering dev pipeline from main"
+                        build job: "${env.JOB_NAME}/dev"
+                    }
+                }
+            
         stage('Build & Archive') {
             when {
                 branch 'main'
@@ -87,15 +97,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Trigger Dev Branch') {
-            when {
-                branch 'main'
-            }
-            steps {
-                echo "Triggering dev pipeline from main"
-                build job: "${env.JOB_NAME}/dev"
-            }
-        }
     }
 }
+
