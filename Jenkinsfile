@@ -51,7 +51,7 @@ pipeline {
             steps {
                 echo "Building in main branch"
                 sh 'mvn clean package'
-                archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
 
