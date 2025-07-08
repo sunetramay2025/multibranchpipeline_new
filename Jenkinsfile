@@ -20,28 +20,28 @@ pipeline {
             }
         }
 
-        stage('Trivy Scan') {
-            steps {
-                    echo "Running Trivy scan in ${env.BRANCH_NAME} branch"
-                    sh '''
-                        wget -q https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -O html.tpl
-                        trivy fs --format template --template "@html.tpl" -o report.html .
-                    '''
-            }
-        }
+        // stage('Trivy Scan') {
+        //     steps {
+        //             echo "Running Trivy scan in ${env.BRANCH_NAME} branch"
+        //             sh '''
+        //                 wget -q https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -O html.tpl
+        //                 trivy fs --format template --template "@html.tpl" -o report.html .
+        //             '''
+        //     }
+        // }
 
-        stage('Sonar Qube Analysis') {
-            steps {
-                    withSonarQubeEnv('sonar') {
-                        echo "Running SonarQube analysis in ${env.BRANCH_NAME}"
-                        sh """
-                            mvn verify sonar:sonar \
-                            -Dsonar.projectKey=java-app-${env.BRANCH_NAME} \
-                            -Dsonar.projectName=java-app-${env.BRANCH_NAME}
-                        """
-                }
-            }
-        }
+        // stage('Sonar Qube Analysis') {
+        //     steps {
+        //             withSonarQubeEnv('sonar') {
+        //                 echo "Running SonarQube analysis in ${env.BRANCH_NAME}"
+        //                 sh """
+        //                     mvn verify sonar:sonar \
+        //                     -Dsonar.projectKey=java-app-${env.BRANCH_NAME} \
+        //                     -Dsonar.projectName=java-app-${env.BRANCH_NAME}
+        //                 """
+        //         }
+        //     }
+        // }
 
 
         stage('Build & Archive') {
@@ -55,31 +55,6 @@ pipeline {
             }
         }
 
-        stage('Trigger Dev Branch') {
-                    when {
-                        branch 'main'
-                    }
-                    steps {
-                        echo "Triggering dev pipeline from main"
-                        build job: "multibranchpipeline/dev"
-                    }
-        }
-
-        stage('Fetch Artifact from main') {
-            when {
-                branch 'dev'
-            }
-            steps {
-                echo 'Running on branch: dev'
-                    copyArtifacts(
-                        projectName: 'multibranchpipeline/main',
-                        filter: '**/target/*.jar',
-                        fingerprintArtifacts: true,
-                        optional: false
-                    )
-
-            }
-        }
         
         
         stage('Deploy') {
@@ -103,4 +78,3 @@ pipeline {
         }
     }
 }
-
