@@ -44,7 +44,7 @@ pipeline {
             }
         }
 
-        stage('Sonar Analysis') {
+        stage('Sonar Qube Analysis') {
             steps {
                     withSonarQubeEnv('sonar') {
                         echo "Running SonarQube analysis in ${env.BRANCH_NAME}"
