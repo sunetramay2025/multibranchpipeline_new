@@ -7,7 +7,7 @@ pipeline {
                 branch 'main'
             }
             steps {
-                echo "Running on branch: ${env.BRANCH_NAME}"
+                echo "Running on Branch: ${env.BRANCH_NAME}"
                 checkout scm
             }
         }
