@@ -3,9 +3,6 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            when {
-                branch 'main'
-            }
             steps {
                 echo "Running on Branch: ${env.BRANCH_NAME}"
                 checkout scm
