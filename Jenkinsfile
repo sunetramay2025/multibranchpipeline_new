@@ -48,11 +48,11 @@ pipeline {
             steps {
                     withSonarQubeEnv('sonar') {
                         echo "Running SonarQube analysis in ${env.BRANCH_NAME}"
-                        sh '''
+                        sh """
                             mvn verify sonar:sonar \
                             -Dsonar.projectKey=java-app-${env.BRANCH_NAME} \
                             -Dsonar.projectName=java-app-${env.BRANCH_NAME}
-                        '''
+                        """
                 }
             }
         }
