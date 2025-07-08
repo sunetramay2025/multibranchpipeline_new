@@ -61,7 +61,7 @@ pipeline {
                     }
                     steps {
                         echo "Triggering dev pipeline from main"
-                        build job: "${env.JOB_NAME.replaceFirst('/main$', '')}/dev"
+                        build job: "multibranchpipeline/dev"
                     }
         }
 
@@ -72,8 +72,7 @@ pipeline {
             steps {
                 echo 'Running on branch: dev'
                     copyArtifacts(
-                        projectName: 'multibranchpipeline',
-                        selector: specific('main'),
+                        projectName: 'multibranchpipeline/main',
                         filter: '**/target/*.jar',
                         fingerprintArtifacts: true,
                         optional: false
