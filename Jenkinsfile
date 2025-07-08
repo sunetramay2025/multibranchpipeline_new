@@ -63,7 +63,7 @@ pipeline {
                     }
                     steps {
                         echo "Triggering dev pipeline from main"
-                        build job: "${env.JOB_NAME}/dev"
+                        build job: "${env.JOB_NAME.replaceFirst('/main$', '')}/dev"
                     }
                 }
             
