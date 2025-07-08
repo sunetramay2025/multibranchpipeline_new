@@ -72,12 +72,13 @@ pipeline {
             steps {
                 echo 'Running on branch: dev'
                     copyArtifacts(
-                        projectName: 'multibranchpipeline/main',
-                        selector: lastSuccessful(),
+                        projectName: 'multibranchpipeline',
+                        selector: specific('main'),
                         filter: '**/target/*.jar',
                         fingerprintArtifacts: true,
                         optional: false
                     )
+
             }
         }
         
